@@ -9,6 +9,7 @@ import uuid
 
 # ************************************** Utility Functions **********************************************
 def generate_thread_id():
+    """Generate a Uniq ThreadID"""
     thread_id=uuid.uuid4()
     return str(thread_id)
 
@@ -22,12 +23,15 @@ def generate_title_from_message(message, max_length=20):
     return "New Chat"
 
 def reset_chat():
+    """Reset the chat when New Chat button was clicked-- 1.new uniq thread_id geneartion, 
+        2.Append that thread_id back to session_state dictionary, 3.empty message_history as new chat is opened """
     thread_id = generate_thread_id()
     st.session_state['thread_id']=thread_id
     st.session_state['message_history']=[]
     st.session_state['thread_titles'][thread_id] = "New Chat"  # Default title, will update after first message
 
 def add_thread_id(thread_id):
+    """ thread_id neeeds to be addeded to session satte and a title needs to get genearted for it's chat history display on the side bar"""
     if thread_id not in st.session_state['chat_threads']:
         st.session_state['chat_threads'].append(thread_id)
     # Initialize title if not exists
@@ -35,6 +39,7 @@ def add_thread_id(thread_id):
         st.session_state['thread_titles'][thread_id] = "New Chat"
 
 def load_conversation(thread_id):
+    """ From LLM's response we can retrieve chat history tied with the particular thread_id like this"""
     state = workflow.get_state(config={'configurable':{'thread_id':str(thread_id)}})
     return state.values.get('messages',[])
 
